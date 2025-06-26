@@ -138,6 +138,9 @@ For a more traditional cloud-native approach, the system can be deployed on a co
 git clone https://github.com/datasciritwik/runable-agent-task.git
 cd runable-agent-task
 
+# (Optional) Pull the latest prebuilt image from Docker Hub
+docker pull ritwik12345/runable-agent-task:latest
+
 # Build the Docker image
 docker build -t runable-agent-task .
 ```
