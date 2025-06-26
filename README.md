@@ -135,11 +135,11 @@ For a more traditional cloud-native approach, the system can be deployed on a co
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd coding-agent
+git clone https://github.com/datasciritwik/runable-agent-task.git
+cd runable-agent-task
 
 # Build the Docker image
-docker build -t coding-agent .
+docker build -t runable-agent-task .
 ```
 
 ### 2. Running the System
@@ -149,11 +149,11 @@ docker build -t coding-agent .
 # 8000: API Server
 # 8080: noVNC Web Client
 # 8888: Jupyter Lab
-docker run -d --name my-agent \
+docker run -d --name runable-agent \
   -p 8000:8000 \
   -p 8080:8080 \
   -p 8888:8888 \
-  coding-agent
+  runable-agent-task
 ```
 
 ### 3. Interacting with the Agent

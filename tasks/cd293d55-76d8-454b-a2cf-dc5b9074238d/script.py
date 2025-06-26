@@ -1,0 +1,1 @@
+import os; print(f"The current directory contains: {os.listdir('.')}" )

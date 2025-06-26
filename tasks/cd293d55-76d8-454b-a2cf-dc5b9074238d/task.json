@@ -1,0 +1,1 @@
+{"steps": [{"tool": "shell", "command": "echo \"Hello from my first task!\" > output.txt"}, {"tool": "python", "code": "import os; print(f\"The current directory contains: {os.listdir('.')}\" )"}]}
