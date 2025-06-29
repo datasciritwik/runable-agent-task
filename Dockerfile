@@ -59,5 +59,5 @@ USER root
 EXPOSE $PORT
 
 # Start supervisor to manage all services
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-ENTRYPOINT ["/app/docker/start.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# ENTRYPOINT ["/app/docker/start.sh"]
