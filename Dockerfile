@@ -35,7 +35,7 @@ WORKDIR /app
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt jupyterlab flask flask-cors
+RUN pip3 install -r requirements.txt jupyterlab Flask flask-cors
 
 # Copy application code
 COPY --chown=agent:agent . .
