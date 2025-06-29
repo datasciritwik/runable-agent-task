@@ -45,7 +45,7 @@ RUN mkdir -p /app/tasks /var/log/supervisor && \
     chown -R agent:agent /app/tasks
 
 # Configure Nginx as reverse proxy
-COPY nginx.conf /etc/nginx/nginx.conf
+# COPY nginx.conf /etc/nginx/nginx.conf
 
 # Configure Supervisor to manage all services
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
