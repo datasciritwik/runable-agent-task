@@ -59,5 +59,10 @@ USER root
 EXPOSE $PORT
 
 # Start supervisor to manage all services
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 # ENTRYPOINT ["/app/docker/start.sh"]
+COPY nginx.conf.template /etc/nginx/nginx.conf.template
+
+CMD envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
+    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+
