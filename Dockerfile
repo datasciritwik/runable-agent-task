@@ -53,10 +53,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Switch to non-root user for application files
 USER agent
 
-# Create .vnc directory and set VNC password
-RUN mkdir -p /home/agent/.vnc && \
-    echo "password" | x11vnc -storepasswd /home/agent/.vnc/passwd
-
 USER root
 
 # Expose the main port (Railway will use this)
