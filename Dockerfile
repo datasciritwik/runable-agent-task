@@ -1,59 +1,66 @@
-# 1.2.1: Choose a Base Image
+# Railway-optimized Dockerfile with reverse proxy
 FROM ubuntu:22.04
 
-# Set environment variable to allow installations without prompts
+# Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PORT=8000
 
-# 1.2.2: Install Core Dependencies
+# Install dependencies including nginx
 RUN apt-get update && apt-get install -y \
-    # System Tools
-    curl \
-    git \
-    sudo \
-    vim \
-    # Python/NodeJS Runtimes
     python3 \
     python3-pip \
     nodejs \
     npm \
-    # GUI and VNC Tools
     xvfb \
     x11vnc \
-    novnc \
     websockify \
-    xfce4 \
     xdotool \
-    --no-install-recommends && \
-    # Clean up apt cache
-    rm -rf /var/lib/apt/lists/*
+    fluxbox \
+    nginx \
+    supervisor \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Jupyter
-RUN pip3 install jupyterlab
+# Install noVNC
+RUN git clone https://github.com/novnc/noVNC.git /opt/novnc && \
+    git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify
 
-# 1.2.3: Configure the Environment
-# Create a non-root user for security
-RUN useradd --create-home --shell /bin/bash --groups sudo agentuser
-# Allow the user to run sudo commands without a password
-RUN echo "agentuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+# Create non-root user
+RUN useradd -m -s /bin/bash agent && \
+    usermod -aG sudo agent
 
-# Set up the application directory
+# Set working directory
 WORKDIR /app
 
-# Copy all your project files into the container's /app directory
-# This includes /agent, /api, etc.
-COPY . .
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt jupyterlab flask flask-cors
 
-# Install Python dependencies
-RUN pip3 install -r requirements.txt
+# Copy application code
+COPY --chown=agent:agent . .
 
-# Grant ownership of the app directory to the new user
-RUN chown -R agentuser:agentuser /app
+# Create necessary directories
+RUN mkdir -p /app/tasks /var/log/supervisor && \
+    chown -R agent:agent /app/tasks
 
-# Switch to the non-root user
-USER agentuser
+# Configure Nginx as reverse proxy
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose the ports for the API, noVNC, and Jupyter
-EXPOSE 8000 8080 8888
+# Configure Supervisor to manage all services
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Define the entrypoint script that will start all services
-ENTRYPOINT ["/app/docker/start.sh"]
+# Switch to non-root user for application files
+USER agent
+
+# Create .vnc directory and set VNC password
+RUN mkdir -p /home/agent/.vnc && \
+    echo "password" | x11vnc -storepasswd /home/agent/.vnc/passwd
+
+USER root
+
+# Expose the main port (Railway will use this)
+EXPOSE $PORT
+
+# Start supervisor to manage all services
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
