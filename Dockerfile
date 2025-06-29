@@ -56,16 +56,16 @@ USER agent
 USER root
 
 # Expose the main port (Railway will use this)
-EXPOSE $PORT
+EXPOSE 8000
 
 # Start supervisor to manage all services
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 # ENTRYPOINT ["/app/docker/start.sh"]
 # Copy nginx template
-COPY nginx.conf.template /etc/nginx/nginx.conf.template
+# COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
-# Generate final nginx.conf dynamically using Railway's injected $PORT
-CMD envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
-    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# # Generate final nginx.conf dynamically using Railway's injected $PORT
+# CMD envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
+#     /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 
 
